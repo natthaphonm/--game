@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกมสื่อการสอน: วัฏจักรของน้ำ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>เกมสื่อการสอน: การเกิดหยาดน้ำฟ้าและวัฏจักรของน้ำ</h1>
+  </header>
+
+  <main>
+    <section id="instructions">
+      <h2>คำแนะนำ</h2>
+      <p>เรียนรู้เกี่ยวกับการเกิดหยาดน้ำฟ้าและวัฏจักรของน้ำด้วยการเล่นเกมท้าทายนี้! กดปุ่มเพื่อเริ่มเกม</p>
+      <button id="startGame">เริ่มเกม</button>
+    </section>
+
+    <section id="game" style="display:none;">
+      <h2>เกมหยาดน้ำฟ้า</h2>
+      <p id="question"></p>
+      <div id="options"></div>
+      <button id="next" style="display:none;">คำถามถัดไป</button>
+    </section>
+
+    <section id="result" style="display:none;">
+      <h2>ผลลัพธ์</h2>
+      <p id="score"></p>
+      <button id="restart">เล่นอีกครั้ง</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f0f8ff;
+}
+
+header {
+  background-color: #4CAF50;
+  padding: 20px;
+  color: white;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#game, #result {
+  margin-top: 20px;
+}
+const questions = [
+  {
+    question: "ขั้นตอนแรกของวัฏจักรของน้ำคืออะไร?",
+    options: ["การระเหย", "การควบแน่น", "การตกลงมา", "การไหลของน้ำ"],
+    answer: "การระเหย"
+  },
+  {
+    question: "หยาดน้ำฟ้าเกิดจากการควบแน่นในชั้นบรรยากาศใด?",
+    options: ["บรรยากาศชั้นโทโพสเฟียร์", "บรรยากาศชั้นสตราโตสเฟียร์", "บรรยากาศชั้นมีโซสเฟียร์", "บรรยากาศชั้นเทอร์โมสเฟียร์"],
+    answer: "บรรยากาศชั้นโทโพสเฟียร์"
+  },
+  {
+    question: "สิ่งที่ไม่เกี่ยวข้องกับวัฏจักรของน้ำคืออะไร?",
+    options: ["การกลั่นตัว", "การระเหย", "การเผาไหม้", "การตกลงมา"],
+    answer: "การเผาไหม้"
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+const startGame = document.getElementById('startGame');
+const gameSection = document.getElementById('game');
+const questionText = document.getElementById('question');
+const optionsDiv = document.getElementById('options');
+const nextButton = document.getElementById('next');
+const resultSection = document.getElementById('result');
+const scoreText = document.getElementById('score');
+const restartButton = document.getElementById('restart');
+
+startGame.addEventListener('click', () => {
+  document.getElementById('instructions').style.display = 'none';
+  gameSection.style.display = 'block';
+  loadQuestion();
+});
+
+nextButton.addEventListener('click', () => {
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+});
+
+restartButton.addEventListener('click', () => {
+  currentQuestion = 0;
+  score = 0;
+  resultSection.style.display = 'none';
+  document.getElementById('instructions').style.display = 'block';
+});
+
+function loadQuestion() {
+  const currentData = questions[currentQuestion];
+  questionText.textContent = currentData.question;
+  optionsDiv.innerHTML = '';
+  currentData.options.forEach(option => {
+    const button = document.createElement('button');
+    button.textContent = option;
+    button.addEventListener('click', () => checkAnswer(option));
+    optionsDiv.appendChild(button);
+  });
+  nextButton.style.display = 'none';
+}
+
+function checkAnswer(selected) {
+  const correct = questions[currentQuestion].answer;
+  if (selected === correct) {
+    score++;
+  }
+  nextButton.style.display = 'block';
+}
+
+function showResult() {
+  gameSection.style.display = 'none';
+  resultSection.style.display = 'block';
+  scoreText.textContent = `คุณตอบถูก ${score} ข้อจากทั้งหมด ${questions.length}`;
+}
